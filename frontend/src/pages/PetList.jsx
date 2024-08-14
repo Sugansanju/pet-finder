@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPetById, fetchPets } from "../redux/slice/petSlice";
+import { deletePet, fetchPetById, fetchPets } from "../redux/slice/petSlice";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import PetModals from "../components/PetModals";
 import { BsEyeFill } from "react-icons/bs";
 import { BiEditAlt } from "react-icons/bi";
 import { IoCallOutline } from "react-icons/io5";
+import { FcDeleteDatabase } from "react-icons/fc";
+import { FiDelete } from "react-icons/fi";
+import { MdDeleteOutline } from "react-icons/md";
+import Swal from 'sweetalert2';
 
 function PetList() {
   const dispatch = useDispatch();
@@ -34,6 +38,23 @@ function PetList() {
   };
 
   const handleClose = () => setShowModal(false);
+
+  const handleDelete = (pet) => {
+    console.log("===Pet Delete==",pet)
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete ${pet.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deletePet(pet.petId));
+        Swal.fire('Deleted!', `${pet.name} has been deleted.`, 'success');
+      }
+    });
+  };
 
   return (
     <>
@@ -72,9 +93,14 @@ function PetList() {
                       </a>
                     
                       {pet.user?.userId === currentUser?.userId && (
+                        <>
                         <Button onClick={() => handleShow("edit", pet)}>
                           <BiEditAlt />
                         </Button>
+                         <Button onClick={() => handleDelete(pet)}>
+                         <MdDeleteOutline/>
+                       </Button>
+                       </>
                       )}
                     </div>
                   </Card.Body>

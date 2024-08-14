@@ -25,10 +25,13 @@ const petSlice = createSlice({
         setError: (state, action) => {
             state.error = action.payload;
         },
+        removePet: (state, action) => {
+          state.pets = state.pets.filter(pet => pet.petId !== action.payload);
+        },
     },
 });
 
-export const { setPets,setPet, addPet, setStatus, setError } = petSlice.actions;
+export const { setPets,setPet, addPet, setStatus, setError,removePet } = petSlice.actions;
 
 export const fetchPets = () => async (dispatch) => {
     dispatch(setStatus('loading'));
@@ -115,6 +118,14 @@ export const updatePet = (pet) => async (dispatch) => {
         imageUrl: imageUrl,
       };
       dispatch(fetchPets()); // Refresh the list of pets after updating
+    } catch (error) {
+      dispatch(setError(error.toString()));
+    }
+  };
+  export const deletePet = (petId) => async (dispatch) => {
+    try {
+      await axios.delete(`http://localhost:8080/pets/${petId}`);
+      dispatch(removePet(petId));
     } catch (error) {
       dispatch(setError(error.toString()));
     }
