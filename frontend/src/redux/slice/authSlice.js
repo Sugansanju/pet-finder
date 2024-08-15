@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from 'axios';
+import { setError } from "./petSlice";
+import { toast } from 'react-toastify';
+
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
@@ -7,6 +10,7 @@ const authSlice = createSlice({
         token: localStorage.getItem('token') || null,
         isAuthenticated: !!localStorage.getItem('token'),
         user: null,
+        error:null
     },
     reducers: {
         setToken: (state, action) => {
@@ -28,6 +32,9 @@ const authSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload;
         },
+        setError:(state,action)=>{
+            state.error=action.payload;
+        }
     }
 });
 export const { setToken, clearToken ,setUser,setCurrentUser} = authSlice.actions;
@@ -40,14 +47,17 @@ export const login = (user) => async (dispatch) => {
     try {
         const response = await axios.post('http://localhost:8080/users/login', data);
         const { userData,token } = response.data;
-        console.log("==Token==", token);
-        console.log("===currentUser===",userData);
-
         dispatch(setToken(token));
         dispatch(setCurrentUser(userData));
+        dispatch(setError(null));
+        toast.success('Login successful');
 
     } catch (error) {
-        console.error('Login failed:', error);
+        const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+        dispatch(setError(errorMessage));
+        console.error('Login failed:', errorMessage);
+        toast.error(`Login failed`);
+
     }
 };
 

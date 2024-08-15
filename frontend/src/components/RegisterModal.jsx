@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { userRegister } from "../redux/slice/authSlice";
+import Swal from 'sweetalert2';
 
 function RegisterModal({ show, handleClose }) {
   const dispatch = useDispatch();
@@ -10,14 +11,25 @@ function RegisterModal({ show, handleClose }) {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
     console.log(data);
-    dispatch(userRegister(data));
-    handleClose(); // Close the modal on successful registration
+
+    try {
+      dispatch(userRegister(data));
+      Swal.fire({
+        title: "Registered Successfully!",
+        text: "Please login your account!",
+        icon: "success"
+      });
+      reset();
+      handleClose();
+    } catch (e) {
+      console.log(e)
+    }
   };
 
   return (
@@ -96,7 +108,11 @@ function RegisterModal({ show, handleClose }) {
               )}
             </Form.Group>
             <div className="text-center pt-3">
-              <Button variant="primary" type="submit" style={{width:'150px'}}>
+              <Button
+                variant="primary"
+                type="submit"
+                style={{ width: "150px" }}
+              >
                 Register
               </Button>
             </div>

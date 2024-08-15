@@ -27,45 +27,74 @@ const PetForm = ({ onSubmit, defaultValues, mode }) => {
         <Form.Control 
           as="textarea" 
           rows={3} 
-          {...register('description')} 
+          {...register('description',{ required: 'Description is required' })} 
+          isInvalid={!!errors.description} 
           disabled={mode === 'view'}
         />
+         <Form.Control.Feedback type="invalid">
+          {errors.description?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Last Seen Location</Form.Label>
         <Form.Control 
           type="text" 
-          {...register('lastSeenLocation')} 
+          {...register('lastSeenLocation',{ required: 'Location is required' })} 
+          isInvalid={!!errors.lastSeenLocation} 
+
           disabled={mode === 'view'}
         />
+         <Form.Control.Feedback type="invalid">
+          {errors.lastSeenLocation?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Date Missing</Form.Label>
         <Form.Control 
           type="date" 
-          {...register('lastSeenDate')} 
+          {...register('lastSeenDate',{ required: 'Date is required' })} 
+          isInvalid={!!errors.lastSeenDate} 
+
           disabled={mode === 'view'}
         />
+         <Form.Control.Feedback type="invalid">
+          {errors.lastSeenDate?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Contact Information</Form.Label>
         <Form.Control 
           type="text" 
-          {...register('contactInfo')} 
+          {...register('contactInfo' ,{ required: 'Contact is required',
+            pattern: {
+              value: /^[0-9]{10}$/,
+              message: "Invalid Contact, must be 10 digits",
+            },
+           })} 
+           isInvalid={!!errors.contactInfo} 
+
           disabled={mode === 'view'}
         />
+         <Form.Control.Feedback type="invalid">
+          {errors.contactInfo?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Label>Photo</Form.Label><br></br>
         {mode !== 'view' ? (
-          <Form.Control type="file" {...register('imageUrl')} />
+          <Form.Control type="file" {...register('imageUrl',{ required: 'Photo is required' })}            
+          isInvalid={!!errors.imageUrl} 
+          />
         ) : (
           <Image src={`http://localhost:8080/uploads/${defaultValues.imageUrl}`} alt={defaultValues.name} fluid />
         )}
+         <Form.Control.Feedback type="invalid">
+          {errors.imageUrl?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       {mode !== 'view' && (

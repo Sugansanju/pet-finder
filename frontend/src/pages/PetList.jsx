@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePet, fetchPetById, fetchPets } from "../redux/slice/petSlice";
+import { deletePet, fetchPets } from "../redux/slice/petSlice";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import PetModals from "../components/PetModals";
 import { BsEyeFill } from "react-icons/bs";
 import { BiEditAlt } from "react-icons/bi";
 import { IoCallOutline } from "react-icons/io5";
-import { FcDeleteDatabase } from "react-icons/fc";
-import { FiDelete } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
 import Swal from 'sweetalert2';
 

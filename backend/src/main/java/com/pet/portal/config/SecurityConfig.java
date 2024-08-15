@@ -38,20 +38,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
              .antMatchers("/users/register", "/users/login").permitAll()
              .antMatchers("/pets/**").permitAll()
              .antMatchers("/uploads/**").permitAll()
-             .antMatchers("/users/currentUser").authenticated()
              .anyRequest().authenticated()
              .and()
          .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
          .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
          .and()
-         .cors().configurationSource(request -> {
-             CorsConfiguration corsConfig = new CorsConfiguration();
-             corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-             corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-             corsConfig.setAllowedHeaders(Arrays.asList("*"));
-             corsConfig.setAllowCredentials(true);
-             return corsConfig;
-         });
+         .cors();
+//         .configurationSource(request -> {
+//             CorsConfiguration corsConfig = new CorsConfiguration();
+//             corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+//             corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//             corsConfig.setAllowedHeaders(Arrays.asList("*"));
+//             corsConfig.setAllowCredentials(true);
+//             return corsConfig;
+//         });
     }
     @Bean
     @Override

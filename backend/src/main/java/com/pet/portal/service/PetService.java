@@ -82,15 +82,15 @@ public class PetService {
 		        	byte[] bytes = imageUrl.getBytes();
 
 					UUID uuid = UUID.randomUUID();
-					String uploadsLocation = "D:\\backend\\portal\\src\\main\\resources\\uploads\\";
+					String uploadsLocation = "D:\\pet-finder\\backend\\src\\main\\resources\\uploads\\";
 					String fileLocation = uploadsLocation + uuid + imageUrl.getOriginalFilename();
 					Path path = Paths.get(fileLocation);
 					Files.write(path, bytes);
-
 					File f = new File(fileLocation);
+					System.out.println("--ImageUrl---"+f.getName());
 		            pet.setImageUrl(f.getName());
 		        }
-
+		        
 		        return petRepository.save(pet);
 		}
 	

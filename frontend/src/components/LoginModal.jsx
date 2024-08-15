@@ -1,26 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function LoginModal({ show, handleClose }) {
   const dispatch = useDispatch();
-  const [loginError, setLoginError] = useState(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const authError = useSelector((state) => state.auth.error);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    dispatch(login(data)); // Ensure dispatch returns a promise if using middleware like thunk
-    handleClose(); // Close the modal on successful login
-    navigate("/"); // Redirect to home page after login
+  const onSubmit =  (data) => {
+     dispatch(login(data));
+      reset();
+      handleClose();
+      navigate("/");
+    
   };
+
+  useEffect(() => {
+    if (authError) {
+      toast.error(`Login failed: ${authError}`);
+    }
+  }, [authError]);
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -30,7 +41,6 @@ function LoginModal({ show, handleClose }) {
         <Modal.Body>
           <Form onSubmit={handleSubmit(onSubmit)} className="p-3">
             <Form.Group controlId="formUsername">
-              {/* <Form.Label>Email</Form.Label> */}
               <Form.Control
                 type="text"
                 placeholder="Username"
@@ -38,22 +48,17 @@ function LoginModal({ show, handleClose }) {
                   required: "Username is required",
                 })}
               />
-              {errors.email && (
+              {errors.username && (
                 <p className="text-danger">{errors.username.message}</p>
               )}
             </Form.Group>
 
             <Form.Group controlId="formPassword" className="pt-3 pb-3">
-              {/* <Form.Label>Password</Form.Label> */}
               <Form.Control
                 type="password"
                 placeholder="Password"
                 {...register("password", {
                   required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
                 })}
               />
               {errors.password && (
@@ -72,6 +77,18 @@ function LoginModal({ show, handleClose }) {
           </Form>
         </Modal.Body>
       </Modal>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

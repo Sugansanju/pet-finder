@@ -62,6 +62,7 @@ public class PetController {
 	            @RequestPart("file") MultipartFile imageUrl) {
 	    	 try {
 	             Pet updatedPet = petService.updatePet(petId, name, description, lastSeenLocation, lastSeenDate, contactInfo, imageUrl);
+	            System.out.println("---Updated pet----"+updatedPet);
 	             return ResponseEntity.ok(updatedPet);
 	         } catch (Exception e) {
 	             return ResponseEntity.status(500).body("Error updating pet: " + e.getMessage());
@@ -88,7 +89,7 @@ public class PetController {
 				byte[] bytes = file.getBytes();
 
 				UUID uuid = UUID.randomUUID();
-				String uploadsLocation = "D:\\backend\\portal\\src\\main\\resources\\uploads\\";
+				String uploadsLocation = "D:\\pet-finder\\backend\\src\\main\\resources\\uploads\\";
 				String fileLocation = uploadsLocation + uuid + file.getOriginalFilename();
 				Path path = Paths.get(fileLocation);
 				Files.write(path, bytes);

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const petSlice = createSlice({
     name: 'pets',
@@ -39,9 +40,11 @@ export const fetchPets = () => async (dispatch) => {
         const response = await axios.get('http://localhost:8080/pets/all');
         dispatch(setPets(response.data));
         dispatch(setStatus('succeeded'));
+
     } catch (error) {
         dispatch(setError(error.toString()));
         dispatch(setStatus('failed'));
+
     }
 };
 
@@ -63,32 +66,16 @@ export const createPet = (pet) => async (dispatch) => {
     try {
         const response = await axios.post('http://localhost:8080/pets/add', pet);
         dispatch(addPet(response.data));
+        toast.success('Pet added successfully');
+
         dispatch(fetchPets());
     } catch (error) {
+        toast.error('Pet added failed');
+
         dispatch(setError(error.toString()));
     }
 };
-export const uploadImage=(formData)=>async(dispatch)=>{
-    try {
-        const response = await axios.post('http://localhost:8080/pets/upload', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-            // Assuming the URL of the uploaded image is returned or stored somewhere
-      const imageUrl =response.data;
 
-      // Create pet data with image URL
-      const petData = {
-        ...data,
-        userId:currentUser?.userId,
-        imageUrl: imageUrl,
-      };
-        dispatch(fetchPets()); // Refresh the list of pets after updating
-      } catch (error) {
-        dispatch(setError(error.toString()));
-      }
-}
 export const updatePet = (pet) => async (dispatch) => {
     try {
       const formData = new FormData();
@@ -117,17 +104,25 @@ export const updatePet = (pet) => async (dispatch) => {
         userId:pet.user?.userId,
         imageUrl: imageUrl,
       };
+      toast.success('Pet updated successfully');
+
       dispatch(fetchPets()); // Refresh the list of pets after updating
     } catch (error) {
       dispatch(setError(error.toString()));
+      toast.error('Pet updated failed');
+
     }
   };
   export const deletePet = (petId) => async (dispatch) => {
     try {
       await axios.delete(`http://localhost:8080/pets/${petId}`);
       dispatch(removePet(petId));
+      // toast.success('Pet removed successfully');
+
     } catch (error) {
       dispatch(setError(error.toString()));
+      // toast.error('Pet removed failed');
+
     }
   };
 
